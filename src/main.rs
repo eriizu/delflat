@@ -1,4 +1,4 @@
-use delivery_flatener::*;
+use delflat::*;
 
 fn main() {
     let mut args = std::env::args().skip(1);

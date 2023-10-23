@@ -74,6 +74,7 @@ mod tests_first_comp_not_root {
 pub fn gen_destination(
     entry: &std::path::Path,
     root: &std::path::Path,
+    output_dir: &std::path::Path,
 ) -> Option<std::path::PathBuf> {
     let first_part = first_comp_not_root(entry, root)?;
     let file_name = entry.file_name()?;
@@ -82,7 +83,7 @@ pub fn gen_destination(
         return None;
     }
     let mut new_path = std::path::PathBuf::new();
-    new_path.push("flat");
+    new_path.push(output_dir);
     new_path.push(first_part);
     new_path.push(file_name);
     return Some(new_path);
@@ -96,7 +97,8 @@ mod test_gen_destination {
     fn normal_1() {
         let root = std::path::PathBuf::from("delivery/");
         let path = std::path::PathBuf::from("delivery/martin/src/main.cpp");
-        let result = gen_destination(&path, &root).unwrap();
+        let output = std::path::PathBuf::from("flat");
+        let result = gen_destination(&path, &root, &output).unwrap();
         let expected = std::ffi::OsString::from("flat/martin/main.cpp");
         assert_eq!(result, expected);
     }

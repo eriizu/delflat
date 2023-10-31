@@ -18,8 +18,14 @@ fn process_one_keep(
     output_dir: &std::path::Path,
 ) {
     let file_path = std::path::Path::new(&file_path_str);
-    let dest = path::gen_destination2(file_path, root, output_dir).unwrap();
-    create_dir_for(&dest).unwrap();
+    let Some(dest) = path::gen_destination2(file_path, root, output_dir) else {
+        eprintln!("path generation failed for {:?}", file_path_str);
+        return;
+    };
+    if let Err(err) = create_dir_for(&dest) {
+        eprintln!("{}", err);
+        return;
+    };
     match std::fs::copy(file_path, &dest) {
         Ok(_) => println!("{:?} -> {:?}", file_path, dest),
         Err(error) => eprintln!("during copy {:?}", error),
@@ -50,8 +56,14 @@ fn process_one_discard(
     output_dir: &std::path::Path,
 ) {
     let file_path = std::path::Path::new(&file_path_str);
-    let dest = path::gen_destination(file_path, root, output_dir).unwrap();
-    create_dir_for(&dest).unwrap();
+    let Some(dest) = path::gen_destination(file_path, root, output_dir) else {
+        eprintln!("path generation failed for {:?}", file_path_str);
+        return;
+    };
+    if let Err(err) = create_dir_for(&dest) {
+        eprintln!("{}", err);
+        return;
+    };
     match std::fs::copy(file_path, &dest) {
         Ok(_) => println!("{:?} -> {:?}", file_path, dest),
         Err(error) => eprintln!("during copy {:?}", error),

@@ -1,8 +1,9 @@
+pub mod cli;
 pub mod path;
 
-pub fn flatten<I>(source_dir: &str, destination_dir: &str, files: I)
+pub fn flatten<I>(source_dir: &std::ffi::OsStr, destination_dir: &std::ffi::OsStr, files: I)
 where
-    I: Iterator<Item = String>,
+    I: Iterator<Item = std::ffi::OsString>,
 {
     let source_dir = std::path::Path::new(source_dir);
     let destination_dir = std::path::Path::new(destination_dir);
@@ -11,7 +12,11 @@ where
     }
 }
 
-fn process_one_keep(file_path_str: String, root: &std::path::Path, output_dir: &std::path::Path) {
+fn process_one_keep(
+    file_path_str: std::ffi::OsString,
+    root: &std::path::Path,
+    output_dir: &std::path::Path,
+) {
     let file_path = std::path::Path::new(&file_path_str);
     let dest = path::gen_destination2(file_path, root, output_dir).unwrap();
     create_dir_for(&dest).unwrap();
@@ -28,9 +33,9 @@ fn create_dir_for(file_path: &std::path::Path) -> std::io::Result<()> {
     return Ok(());
 }
 
-pub fn flatten_discard<I>(source_dir: &str, destination_dir: &str, files: I)
+pub fn flatten_discard<I>(source_dir: &std::ffi::OsStr, destination_dir: &std::ffi::OsStr, files: I)
 where
-    I: Iterator<Item = String>,
+    I: Iterator<Item = std::ffi::OsString>,
 {
     let source_dir = std::path::Path::new(source_dir);
     let destination_dir = std::path::Path::new(destination_dir);
@@ -40,7 +45,7 @@ where
 }
 
 fn process_one_discard(
-    file_path_str: String,
+    file_path_str: std::ffi::OsString,
     root: &std::path::Path,
     output_dir: &std::path::Path,
 ) {

@@ -44,7 +44,7 @@ mod tests_first_comp_not_root {
         assert_eq!(result, expected);
     }
     #[test]
-    fn two_level() {
+    fn two_levels() {
         let root = std::path::PathBuf::from("delivery/foo");
         let path = std::path::PathBuf::from("delivery/foo/toto/main.cpp");
         let result = super::first_comp_not_root(&path, &root);
@@ -55,7 +55,7 @@ mod tests_first_comp_not_root {
     }
 
     #[test]
-    fn miss_matched_names() {
+    fn missmatched_names() {
         let root = std::path::PathBuf::from("delivery/foo");
         let path = std::path::PathBuf::from("not_delivery/foo/toto/main.cpp");
         let result = super::first_comp_not_root(&path, &root);
@@ -63,7 +63,7 @@ mod tests_first_comp_not_root {
     }
 
     #[test]
-    fn path_sorter_than_root() {
+    fn path_shorter_than_root() {
         let root = std::path::PathBuf::from("delivery/foo");
         let path = std::path::PathBuf::from("delivery");
         let result = super::first_comp_not_root(&path, &root);

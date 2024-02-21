@@ -1,6 +1,12 @@
 pub mod cli;
 pub mod path;
 
+type GenDestFn = fn(
+    file: &std::path::Path,
+    root_dir: &std::path::Path,
+    output_dir: &std::path::Path,
+) -> Option<std::path::PathBuf>;
+
 pub fn flatten<I>(source_dir: &std::ffi::OsStr, destination_dir: &std::ffi::OsStr, files: I)
 where
     I: Iterator<Item = std::ffi::OsString>,
@@ -8,7 +14,12 @@ where
     let source_dir = std::path::Path::new(source_dir);
     let destination_dir = std::path::Path::new(destination_dir);
     for file_path_str in files {
-        process_one_keep(file_path_str, source_dir, destination_dir);
+        process_one_keep(
+            file_path_str,
+            source_dir,
+            destination_dir,
+            path::gen_destination2,
+        );
     }
 }
 
@@ -16,9 +27,10 @@ fn process_one_keep(
     file_path_str: std::ffi::OsString,
     root: &std::path::Path,
     output_dir: &std::path::Path,
+    gen_dest: GenDestFn,
 ) {
     let file_path = std::path::Path::new(&file_path_str);
-    let Some(dest) = path::gen_destination2(file_path, root, output_dir) else {
+    let Some(dest) = gen_dest(file_path, root, output_dir) else {
         eprintln!("path generation failed for {:?}", file_path_str);
         return;
     };
@@ -46,7 +58,12 @@ where
     let source_dir = std::path::Path::new(source_dir);
     let destination_dir = std::path::Path::new(destination_dir);
     for file_path_str in files {
-        process_one_discard(file_path_str, source_dir, destination_dir);
+        process_one_keep(
+            file_path_str,
+            source_dir,
+            destination_dir,
+            path::gen_destination,
+        );
     }
 }
 

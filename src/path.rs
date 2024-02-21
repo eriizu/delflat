@@ -19,6 +19,11 @@ pub fn comps_after_root<'a>(
     return Some(comps_path);
 }
 
+/// Get the first component that isn't part of root from a path.
+/// Example:
+/// - path: abc/def/ghi/jkl
+/// - root: abc/def
+/// - returns: ghi
 pub fn first_comp_not_root(
     path: &std::path::Path,
     root: &std::path::Path,
@@ -71,6 +76,12 @@ mod tests_first_comp_not_root {
     }
 }
 
+/// Generate destination string for given entry, without keeping components of
+/// the source path.
+///
+/// Example:
+/// "root/tata/src/stack/create.c" as an entry returns
+/// "output_dir/tata/create.c"
 pub fn gen_destination(
     entry: &std::path::Path,
     root: &std::path::Path,
@@ -104,6 +115,12 @@ mod test_gen_destination {
     }
 }
 
+/// Generate destination string for given entry, **keeping** components of
+/// the source path and seperating them by dots.
+///
+/// Example:
+/// "root/tata/src/stack/create.c" as an entry returns
+/// "output_dir/tata/src.stack.create.c"
 pub fn gen_destination2(
     entry: &std::path::Path,
     root_dir: &std::path::Path,

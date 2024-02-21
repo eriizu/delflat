@@ -1,63 +1,67 @@
-# Journal
-## 20231016
+# what's this?
 
-Maybe parsing the glob in the program isn't usefull, as the shell can do it
-for me if I don't use quote in my command.
+Copy files to a destination subdir with or without preserving path
+components. When they are kept, they are inserted into the destination
+filename, separated by dots.
 
-That would eliminated the need for recursive directory exploration too, since
-the arguments of the program would already contain all the files to process.
+example when not keeping:
+"root/tata/src/stacks/create.c" becomes
+"dest/tata/create.c"
 
-> Don't reinvent the wheel, if you can avoid it.
+example when keeping:
+"root/tata/src/stacks/create.c" becomes
+"dest/tata/src.stacks.create.c"
 
-## 20231017
+Try it using
 
-I'd like to make a function that takes a list of paths, and groups them by common roots.
+```sh
+cargo run -- --root=ROOT_DIR --dest=DEST_DIR [-k] FILES_TO_COPY
+```
 
-If all paths share a common root, maybe abstract it.
+# use case
 
-Example 1:
+After cloning student repos for a project you would end up with something like this:
 
-- toto
-    - a
-        - riri
-        - fifi
-    - b
-    - d
-- tata
-    - a
-    - b
-- titi
+> - delivery/
+>   - alice/
+>     - Makefile
+>     - src/
+>       - main.c
+>       - stack/
+>         - create.c
+>         - push.c
+>         - [...]
+>   - bob/
+>     - [something similar to alice]
+>   - [...]
 
-would regroup into
+(fig. 1)
 
-- toto:
-    - toto/a/riri
-    - toto/a/fifi
-    - toto/b
-    - toto/d
-- tata:
-    - tata/a
-    - tata/b
+That's usually not an issue. But then comes moss. A code plagiarism checking tool.
+It expects a structure that looks more like this:
 
-## 20231019
+> - flat_delivery/
+>   - alice/
+>     - main.c
+>     - stack.create.c
+>     - stack.push.c
+>     - [...]
+>   - bob/
+>     - main.c
+>     - strlen.c
+>     - [...]
 
-Solution was to ask user the root path to use. All directories directly under
-the root path are preserved but their subdirectories are flatenned so that you
-end up with:
+(fig. 2)
 
-- root
-    - dir1
-        - all files from all subdirs of dir1
-    - dir2
-        - all files from all subdirs of dir2
+This is excactly what delflat does.
 
-Also to avoid duplicates, the names of the subdirs are inserted as a prefix
-in the name of the preserved files.
+The command to go from fig. 1 to fig. 2 is
 
-`root/dir1/src/io/net.cpp` would become: `dest/dir1/src.io.net.cpp`
+```sh
+delflat --root=delivery --dest=flat_delivery -k $(find delivery -name "*.c")
+```
 
-Also not using globs or recusrive dir walking at all, as other programmes can
-do that very well for us.
+# Known issues
 
-Using a syntax such as `delflat source dest source/**/*.cpp` in a shell
-produces perfect results.
+If the root directory starts with `./`, the files will also need to start with `./`,
+even though they are referencing the same directory.

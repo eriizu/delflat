@@ -1,18 +1,22 @@
 # what's this?
 
-Copy files to a destination subdir with or without preserving path
+A tool to copy files to a destination subdir with or without preserving path
 components. When they are kept, they are inserted into the destination
 filename, separated by dots.
 
 example when not keeping:
+
 "root/tata/src/stacks/create.c" becomes
+
 "dest/tata/create.c"
 
 example when keeping:
+
 "root/tata/src/stacks/create.c" becomes
+
 "dest/tata/src.stacks.create.c"
 
-Try it using
+Basic usage:
 
 ```sh
 cargo run -- --root=ROOT_DIR --dest=DEST_DIR [-k] FILES_TO_COPY

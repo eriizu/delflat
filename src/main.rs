@@ -4,11 +4,17 @@ use delflat::*;
 fn main() {
     let opts = delflat::cli::Cli::parse();
 
-    if opts.keep_dir_names {
-        flatten(&opts.root, &opts.dest, opts.file_names.into_iter());
-    } else {
-        flatten_discard(&opts.root, &opts.dest, opts.file_names.into_iter());
-    }
+    flatten(
+        &opts.root,
+        &opts.dest,
+        opts.file_names.into_iter(),
+        opts.keep_dir_names,
+    );
+    // if opts.keep_dir_names {
+    //     flatten(&opts.root, &opts.dest, opts.file_names.into_iter());
+    // } else {
+    //     flatten_discard(&opts.root, &opts.dest, opts.file_names.into_iter());
+    // }
 }
 
 // fn main1() {

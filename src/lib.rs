@@ -1,3 +1,5 @@
+use path::gen_destination2;
+
 pub mod cli;
 pub mod path;
 
@@ -9,44 +11,34 @@ type GenDestFn = fn(
     output_dir: &std::path::Path,
 ) -> Option<std::path::PathBuf>;
 
-/// Copies files to a destination subdir keeping all components of the
-/// original paths. They are inserted in the filenames and separated by dots.
-/// example:
-/// "root/tata/src/stacks/create.c" becomes
-/// "dest/tata/src.stacks.create.c"
-pub fn flatten<I>(source_dir: &std::ffi::OsStr, destination_dir: &std::ffi::OsStr, files: I)
-where
-    I: Iterator<Item = std::ffi::OsString>,
-{
-    let source_dir = std::path::Path::new(source_dir);
-    let destination_dir = std::path::Path::new(destination_dir);
-    for file_path_str in files {
-        process_one_file(
-            file_path_str,
-            source_dir,
-            destination_dir,
-            path::gen_destination2,
-        );
-    }
-}
-
-/// Copies files to a destination subdir without preserving path components
-/// example:
+/// Copies files to a destination subdir with or without preserving path
+/// components. When they are kept, they are inserted into the destination
+/// filename, separated by dots.
+///
+/// example when not keeping:
 /// "root/tata/src/stacks/create.c" becomes
 /// "dest/tata/create.c"
-pub fn flatten_discard<I>(source_dir: &std::ffi::OsStr, destination_dir: &std::ffi::OsStr, files: I)
-where
+///
+/// example when keeping:
+/// "root/tata/src/stacks/create.c" becomes
+/// "dest/tata/src.stacks.create.c"
+pub fn flatten<I>(
+    source_dir: &std::ffi::OsStr,
+    destination_dir: &std::ffi::OsStr,
+    files: I,
+    keep_components: bool,
+) where
     I: Iterator<Item = std::ffi::OsString>,
 {
     let source_dir = std::path::Path::new(source_dir);
     let destination_dir = std::path::Path::new(destination_dir);
+    let gen_dest_fn: GenDestFn = if keep_components {
+        path::gen_destination2
+    } else {
+        path::gen_destination
+    };
     for file_path_str in files {
-        process_one_file(
-            file_path_str,
-            source_dir,
-            destination_dir,
-            path::gen_destination,
-        );
+        process_one_file(file_path_str, source_dir, destination_dir, gen_dest_fn);
     }
 }
 

@@ -6,7 +6,7 @@ pub fn comps_after_root<'a>(
     let comps_root = root.components();
 
     for comp in comps_root {
-        if let Some(tmp) = comps_path.nth(0) {
+        if let Some(tmp) = comps_path.next() {
             if tmp != comp {
                 eprintln!("not the same root");
                 return None;
@@ -16,7 +16,7 @@ pub fn comps_after_root<'a>(
             return None;
         }
     }
-    return Some(comps_path);
+    Some(comps_path)
 }
 
 /// Get the first component that isn't part of root from a path.
@@ -29,11 +29,7 @@ pub fn first_comp_not_root(
     root: &std::path::Path,
 ) -> Option<std::ffi::OsString> {
     let mut comps_path = comps_after_root(path, root)?;
-    if let Some(tmp) = comps_path.nth(0) {
-        return Some(tmp.as_os_str().to_os_string());
-    } else {
-        return None;
-    }
+    comps_path.next().map(|tmp| tmp.as_os_str().to_os_string())
 }
 
 #[cfg(test)]
@@ -97,7 +93,7 @@ pub fn gen_destination(
     new_path.push(output_dir);
     new_path.push(first_part);
     new_path.push(file_name);
-    return Some(new_path);
+    Some(new_path)
 }
 
 #[cfg(test)]
@@ -128,7 +124,7 @@ pub fn gen_destination2(
 ) -> Option<std::path::PathBuf> {
     let mut comps = comps_after_root(entry, root_dir)?;
     let mut acc_ostr = std::ffi::OsString::new();
-    let subdir_name = comps.nth(0)?;
+    let subdir_name = comps.next()?;
     let mut first = true;
     for component in comps {
         if !first {
@@ -141,7 +137,7 @@ pub fn gen_destination2(
     result.push(output_dir);
     result.push(subdir_name);
     result.push(acc_ostr);
-    return Some(result);
+    Some(result)
 }
 
 #[cfg(test)]

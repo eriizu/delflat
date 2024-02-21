@@ -1,5 +1,3 @@
-use path::gen_destination2;
-
 pub mod cli;
 pub mod path;
 
@@ -67,5 +65,5 @@ fn create_dir_for(file_path: &std::path::Path) -> std::io::Result<()> {
     if let Some(parent) = file_path.parent() {
         std::fs::create_dir_all(parent)?;
     }
-    return Ok(());
+    Ok(())
 }

@@ -49,16 +49,16 @@ That's usually not an issue. But then comes moss. A code plagiarism checking too
 It expects a structure that looks more like this:
 
 ```
-> - flat_delivery/
->   - alice/
->     - main.c
->     - stack.create.c
->     - stack.push.c
->     - [...]
->   - bob/
->     - main.c
->     - strlen.c
->     - [...]
+- flat_delivery/
+  - alice/
+    - main.c
+    - stack.create.c
+    - stack.push.c
+    - [...]
+  - bob/
+    - main.c
+    - strlen.c
+    - [...]
 ```
 
 (fig. 2)
